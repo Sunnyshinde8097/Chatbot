@@ -1,33 +1,37 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
+import "./Login.css";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Retrieve stored registration data from cookies
         const storedEmail = Cookies.get("email");
         const storedPassword = Cookies.get("password");
 
-        // Validate login credentials
         if (email === storedEmail && password === storedPassword) {
-            setMessage("Login successful! Redirecting...");
-            console.log("Logged in:", { email, password });
+            setPopupMessage("Login successful! Redirecting...");
+            setShowPopup(true);
 
             setTimeout(() => {
-                window.location.href = "/Home"; 
+                window.location.href = "/employee";
             }, 2000);
         } else {
-            setMessage("Invalid email or password. Try again.");
+            setPopupMessage("Invalid email or password. Try again.");
+            setShowPopup(true);
         }
     };
 
     return (
         <div className="container mt-5">
+            <div className="text-center mb-4">
+            <img src="./Images/Webiknowns.png" alt="Webiknowns Logo" className="company-logo" />
+             </div>
             <h2 className="text-center mb-4">Login</h2>
             <form onSubmit={handleSubmit} className="w-50 mx-auto p-4 border rounded shadow">
                 <div className="mb-3">
@@ -53,8 +57,16 @@ const Login = () => {
                 <button type="submit" className="btn btn-primary w-100">Login</button>
             </form>
 
-            {/* Success/Error Message */}
-            {message && <p className="text-center mt-3 text-danger">{message}</p>}
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <p>{popupMessage}</p>
+                        <button className="btn btn-secondary mt-2" onClick={() => setShowPopup(false)}>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
